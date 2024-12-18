@@ -1,20 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { Provider } from "react-redux";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import store from "./src/redux/Store";
+import SideBar from "./src/component/sidebar/SideBar";
+import UploadVideoButton from "./src/component/sidebar/UploadVideoButton";
+import VideoDisplay from "./src/component/main/VideoDisplay";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <SideBar />
+          <VideoDisplay />
+        </View>
+      </SafeAreaView>
+    </Provider>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    flexDirection: "row",
   },
 });
