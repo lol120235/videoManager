@@ -132,8 +132,10 @@ const analyseVideoContent = async (video: string) => {
   const videoContents = await formatVideoContent(video);
 
   const systemPrompt =
-    "You will be provided with contents of a video with timestamps. Please provide a summary of the video." +
+    "You will be provided with contents of a video with timestamps. Please provide a summary of the video based on the scenes. " +
     "\n" +
+    "You must split the different scenes with an empty line. You can see from the example below: " +
+    "\n\n" +
     "Example Input: " +
     "\n" +
     "[00:00:00] The scene is inside a garden. There is a cat nearby a tree." +
@@ -145,7 +147,7 @@ const analyseVideoContent = async (video: string) => {
     "Example Output: " +
     "\n" +
     "[00:00:00] - [00:00:03] The scene is inside a garden. There is a cat black and white nearby a tree playing with a ball" +
-    "\n" +
+    "\n\n" +
     "[00:00:06] - [00:00:06] The scene is inside a house. There is a boy eating. ";
 
   const response = await openAIChat([

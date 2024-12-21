@@ -25,7 +25,6 @@ const UploadVideoButton = () => {
             name: asset.name,
             uri: asset.uri,
             content: null, // Initial content is null
-            embeddings: null, // Initial embeddings is null
           },
         });
 
@@ -38,22 +37,30 @@ const UploadVideoButton = () => {
               payload: {
                 name: asset.name,
                 uri: asset.uri,
-                content: content?.map((c) => [c, null]),
+                content: content?.map((c) => ({
+                  content: c,
+                  embeddings: null,
+                })),
               },
             });
           })
           .then((result) => {
+            console.log("Result of setting content (before embeddings)");
+            console.log(result);
             result.payload.content?.forEach((c) => {
-              getEmbeddings(c[0])
+              getEmbeddings(
+                result.payload.content?.find((_) => _.content === c.content)
+                  ?.content
+              )
                 .then((embeddings) => {
                   console.log("Updating Embeddings");
                   console.log(
                     dispatch({
-                      type: "UPDATE_VIDEO",
+                      type: "UPDATE_EMBEDDINGS",
                       payload: {
                         name: asset.name,
-                        uri: asset.uri,
-                        content: [c[0], embeddings],
+                        content: c.content,
+                        embeddings: embeddings,
                       },
                     })
                   );

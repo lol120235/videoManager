@@ -90,11 +90,13 @@ export default function ChatLayout() {
       for (const video of data) {
         for (const content of video.content) {
           if (content) {
-            if (cosineSimilarity(content[1], embeddings) >= 0.7) {
+            console.log("trying to find related data from");
+            console.log(content);
+            if (cosineSimilarity(content.embeddings, embeddings) >= 0.4) {
               if (!relatedData[video.name]) {
-                relatedData[video.name] = [content[0]];
+                relatedData[video.name] = [content.content];
               } else {
-                relatedData[video.name].push(content[0]);
+                relatedData[video.name].push(content.content);
               }
             }
           }
@@ -110,8 +112,21 @@ export default function ChatLayout() {
     console.log("Related Data: ");
     console.log(convertedData);
 
+    const allData = data
+      .map(
+        (video: any) =>
+          `${video.name}: \n${video.content
+            .map((c: any) => c.content)
+            .join("\n")}`
+      )
+      .join("\n\n");
+
     openAIChat([
-      { role: "system", content: systemPrompt + "\n\n" + convertedData },
+      {
+        role: "system",
+        content:
+          systemPrompt + "\n\nHere are the data from the videos: " + allData,
+      },
       ...toChatgptFormat(messages.slice(1)),
     ]).then((response) => {
       setGptThinking(false);

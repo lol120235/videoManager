@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { Video } from "expo-av";
 import { useDispatch } from "react-redux";
 import PopUpModal from "./PopUpModal";
@@ -43,10 +50,15 @@ const VideoDisplayCard = ({
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
         >
-          <Text>Video Name: {video.name}</Text>
-          {video.content?.map((c, i) => (
-            <Text key={i}>{c}</Text>
-          ))}
+          <ScrollView style={{ padding: 10 }}>
+            <Text>Video Name: {video.name}</Text>
+            {video.content?.map((c, i) => (
+              <Text key={i}>
+                {c.content}
+                {"\n\n"}
+              </Text>
+            ))}
+          </ScrollView>
         </PopUpModal>
         <View style={styles.thumbnail}>
           <Video
