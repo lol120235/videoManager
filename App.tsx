@@ -5,16 +5,19 @@ import store from "./src/redux/Store";
 import SideBar from "./src/component/sidebar/SideBar";
 import UploadVideoButton from "./src/component/sidebar/UploadVideoButton";
 import VideoDisplay from "./src/component/main/VideoDisplay";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
   return (
     <Provider store={store}>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <SideBar />
-          <VideoDisplay />
-        </View>
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <SideBar />
+            <VideoDisplay />
+          </View>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </Provider>
   );
 }

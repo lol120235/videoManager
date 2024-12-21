@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useSelector } from "react-redux";
-import { callOpenAI } from "./callOpenAI";
+import { openAIChat } from "./callOpenAI";
 
 const baseURL = "https://codingteam3.cpu.edu.hk/api"; //"http://localhost:1234/v1";
 const port = 1234;
@@ -15,9 +15,7 @@ const getVideo = async (videoName: string) => {
   return video;
 };
 
-const splitVideoScreen = (
-  videoData: string
-): Promise<string[]> => {
+const splitVideoScreen = (videoData: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     const resultImages: string[] = [];
     const video = document.createElement("video");
@@ -26,7 +24,20 @@ const splitVideoScreen = (
     video.addEventListener("loadeddata", () => {
       const { duration } = video;
       let processedFrames = 0;
-      const interval = duration / Math.log2(duration) * 2;
+      var interval = 1;
+      if (duration > 3600) {
+        interval = 30;
+      } else if (duration > 1800) {
+        interval = 15;
+      } else if (duration > 600) {
+        interval = 10;
+      } else if (duration > 300) {
+        interval = 5;
+      } else if (duration > 60) {
+        interval = 3;
+      } else if (duration > 30) {
+        interval = 2;
+      }
 
       for (let j = 0; j < duration; j += interval) {
         video.currentTime = j;
@@ -67,7 +78,7 @@ const getVideoContent = async (video: string) => {
 
   const contents = await Promise.all(
     frames.map(async (frame) => {
-      const response = await callOpenAI([
+      const response = await openAIChat([
         {
           role: "system",
           content: "You will be provided a video with URI. ",
@@ -133,7 +144,7 @@ const analyseVideoContent = async (video: string) => {
     "\n" +
     "[00:00:06] - [00:00:06] The scene is inside a house. There is a boy eating. ";
 
-  const response = await callOpenAI([
+  const response = await openAIChat([
     { role: "system", content: systemPrompt },
     {
       role: "user",

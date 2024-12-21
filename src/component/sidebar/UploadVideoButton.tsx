@@ -3,6 +3,7 @@ import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { useDispatch } from "react-redux";
 import { analyseVideoContent } from "../../lib/analyseVideoContent";
+import { getEmbeddings } from "../../lib/callOpenAI";
 
 const UploadVideoButton = () => {
   console.log("Why its undefined", process.env.OPENAI_AZURE_URL);
@@ -17,6 +18,7 @@ const UploadVideoButton = () => {
       console.log(result.assets);
 
       result.assets.forEach((asset) => {
+        const [content, setContent] = React.useState<string | null>();
         // Dispatch initial video data
         dispatch({
           type: "ADD_VIDEO",
@@ -29,12 +31,25 @@ const UploadVideoButton = () => {
 
         // Analyse video content and dispatch the update
         analyseVideoContent(asset.uri).then((content) => {
+          setContent(content);
           dispatch({
-            type: "UPDATE_VIDEO_CONTENT",
+            type: "UPDATE_VIDEO",
             payload: {
               name: asset.name,
               uri: asset.uri,
               content,
+            },
+          });
+        });
+
+        getEmbeddings(content).then((embeddings) => {
+          dispatch({
+            type: "UPDATE_VIDEO",
+            payload: {
+              name: asset.name,
+              uri: asset.uri,
+              content,
+              embeddings,
             },
           });
         });
@@ -58,7 +73,6 @@ const UploadVideoButton = () => {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    flex: 1,
   },
   button: {
     backgroundColor: "#009aee",

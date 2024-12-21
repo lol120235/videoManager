@@ -2,19 +2,20 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import UploadVideoButton from "./UploadVideoButton";
 import AnalyseButton from "./AnalyseButton";
+import ChatLayout from "../chat/ChatLayout";
 
 const SideBar = () => {
   return (
     <View style={styles.sidebar}>
       <UploadVideoButton />
-      <AnalyseButton />
+      <ChatLayout />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   sidebar: {
-    width: 300, // Adjust the width as needed
+    width: 500, // Adjust the width as needed
     backgroundColor: "#f0f0f0",
     alignItems: "flex-start",
     justifyContent: "flex-start",
