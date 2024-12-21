@@ -9,7 +9,7 @@ const VideoDisplay = () => {
 
   useEffect(() => {
     const groupedVideos: any[][] = [];
-    const emptyVideo = { name: null, uri: null };
+    const emptyVideo = { name: null, uri: null, content: null };
     for (let i = 0; i < videos.length; i += 4) {
       groupedVideos.push(videos.slice(i, i + 4));
     }
