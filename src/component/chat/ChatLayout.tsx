@@ -48,8 +48,8 @@ export default function ChatLayout() {
   }, []);
 
   useEffect(() => {
-    if (messages[0].quickReplies?.values.length === 3) setGptThinking(false);
     if (messages.length <= 1) return;
+    if (messages[0].user._id === "assistant") return;
     // if (messages[0].user._id === "gpt") {
     //   if (messages[0].quickReplies?.values) return;
     //   setQuickReplies([]);
@@ -76,8 +76,17 @@ export default function ChatLayout() {
       "You are an assistant for video processing. You can help the user with video editing. ";
     openAIChat([
       { role: "system", content: systemPrompt },
-      toChatgptFormat(messages),
-    ]);
+      ...toChatgptFormat(messages.slice(1)),
+    ]).then((response) => {
+      setGptThinking(false);
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, [
+          newGptMessage(
+            response.choices[0].message?.content ?? "What can i say?"
+          ),
+        ])
+      );
+    });
   }, [messages]);
 
   return (

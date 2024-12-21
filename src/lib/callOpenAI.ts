@@ -6,8 +6,6 @@ async function openAIChat(messages: any[]) {
   const azureKey = process.env.EXPO_PUBLIC_OPENAI_AZURE_KEY;
   const deploymentId = "gpt4o-ictproject";
 
-  console.log(endpoint, azureKey);
-
   if (!endpoint || !azureKey || !deploymentId) {
     throw new Error("Azure OpenAI credentials are not set");
   }
@@ -19,8 +17,8 @@ async function openAIChat(messages: any[]) {
 }
 
 async function getEmbeddings(messages: any) {
-  const endpoint = "https://chatgptserver.openai.azure.com/";
-  const azureKey = "8b5ed8dd51c644cc9ee2c561576d214c";
+  const endpoint = process.env.EXPO_PUBLIC_OPENAI_AZURE_EMBD_URL;
+  const azureKey = process.env.EXPO_PUBLIC_OPENAI_AZURE_EMBD_KEY;
   const deploymentId = "text-embedding-3-large";
 
   if (!endpoint || !azureKey || !deploymentId) {

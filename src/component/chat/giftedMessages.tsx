@@ -25,12 +25,12 @@ export function newGptMessage(text: string) {
 }
 
 export function toChatgptFormat(iMessages: IMessage[]) {
-  const messages = iMessages.map((message) => ({
-    role: message.user._id,
-    content: message.text,
-  }));
+  const messages = iMessages
+    .map((message) => ({
+      role: message.user._id,
+      content: message.text,
+    }))
+    .toReversed();
 
-  return {
-    messages: messages.toReversed(),
-  };
+  return messages;
 }
