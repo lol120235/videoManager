@@ -6,7 +6,7 @@ import { analyseVideoContent } from "../../lib/analyseVideoContent";
 import { getEmbeddings } from "../../lib/callOpenAI";
 
 const UploadVideoButton = () => {
-  console.log("Why its undefined", process.env.OPENAI_AZURE_URL);
+  console.log("It's fixed yeaaaa", process.env.EXPO_PUBLIC_OPENAI_AZURE_URL);
   const dispatch = useDispatch();
 
   const handleUpload = async () => {
