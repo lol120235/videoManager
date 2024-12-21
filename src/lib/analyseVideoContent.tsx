@@ -17,14 +17,17 @@ const getVideo = async (videoName: string) => {
 
 const splitVideoScreen = (videoData: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
-    const resultImages: string[] = [];
-    const video = document.createElement("video");
-    video.src = videoData;
+    const videoElement = document.createElement("video");
+    videoElement.src = videoData;
+    videoElement.crossOrigin = "anonymous";
 
-    video.addEventListener("loadeddata", () => {
-      const { duration } = video;
-      let processedFrames = 0;
-      var interval = 1;
+    videoElement.addEventListener("loadeddata", () => {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      const frames: string[] = [];
+      let interval = 1;
+
+      const duration = videoElement.duration;
       if (duration > 3600) {
         interval = 40;
       } else if (duration > 1800) {
@@ -39,31 +42,25 @@ const splitVideoScreen = (videoData: string): Promise<string[]> => {
         interval = 3;
       }
 
-      for (let j = 0; j < duration; j += interval) {
-        video.currentTime = j;
-        video.addEventListener("seeked", function onSeeked() {
-          resultImages.push(generateThumbnail());
-          processedFrames++;
-          if (processedFrames >= duration / interval) {
-            video.removeEventListener("seeked", onSeeked);
-            resolve(resultImages);
-          }
-        });
-      }
+      videoElement.addEventListener("seeked", () => {
+        context?.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        frames.push(canvas.toDataURL("image/png"));
+
+        if (videoElement.currentTime < videoElement.duration) {
+          videoElement.currentTime += interval;
+        } else {
+          resolve(frames);
+        }
+      });
+
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      videoElement.currentTime = 0;
     });
 
-    video.addEventListener("error", (e) => {
-      reject(new Error("Failed to load video"));
+    videoElement.addEventListener("error", (error) => {
+      reject(error);
     });
-
-    function generateThumbnail(): string {
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context?.drawImage(video, 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL("image/png");
-    }
   });
 };
 
