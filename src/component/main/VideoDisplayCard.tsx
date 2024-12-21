@@ -3,24 +3,21 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Video } from "expo-av";
 import { useDispatch } from "react-redux";
 import PopUpModal from "./PopUpModal";
-import getVideoContent from "../../lib/analyseVideoContent";
 
 const VideoDisplayCard = ({
   video,
 }: {
-  video: { name: string | null; uri: string | null };
+  video: { name: string | null; uri: string | null; content: string | null };
 }) => {
   const videoRef = useRef<Video>(null);
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const isVideo = video.uri ? true : false;
 
   return isVideo ? (
     <TouchableOpacity
       onPress={async () => {
         setModalVisible(true);
-        const result = await getVideoContent(video.uri ?? "");
       }}
     >
       <View
@@ -47,6 +44,7 @@ const VideoDisplayCard = ({
           onClose={() => setModalVisible(false)}
         >
           <Text>Video Name: {video.name}</Text>
+          <Text>{video.content}</Text>
         </PopUpModal>
         <View style={styles.thumbnail}>
           <Video

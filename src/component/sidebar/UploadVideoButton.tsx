@@ -2,8 +2,10 @@ import React from "react";
 import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { useDispatch } from "react-redux";
+import { analyseVideoContent } from "../../lib/analyseVideoContent";
 
 const UploadVideoButton = () => {
+  console.log("Why its undefined", process.env.OPENAI_AZURE_URL);
   const dispatch = useDispatch();
 
   const handleUpload = async () => {
@@ -13,15 +15,30 @@ const UploadVideoButton = () => {
 
     if (!result.canceled) {
       console.log(result.assets);
-      result.assets.map((asset) =>
+
+      result.assets.forEach((asset) => {
+        // Dispatch initial video data
         dispatch({
           type: "ADD_VIDEO",
           payload: {
             name: asset.name,
             uri: asset.uri,
+            content: null, // Initial content is null
           },
-        })
-      );
+        });
+
+        // Analyse video content and dispatch the update
+        analyseVideoContent(asset.uri).then((content) => {
+          dispatch({
+            type: "UPDATE_VIDEO_CONTENT",
+            payload: {
+              name: asset.name,
+              uri: asset.uri,
+              content,
+            },
+          });
+        });
+      });
     }
   };
 

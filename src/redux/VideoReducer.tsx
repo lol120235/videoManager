@@ -16,6 +16,15 @@ const VideoReducer = (state = initialState, action: any) => {
           (video: { name: string }) => video.name !== action.payload.name
         ),
       };
+    case "UPDATE_VIDEO_CONTENT":
+      return {
+        ...state,
+        videos: state.videos.map((video: any) =>
+          video.name === action.payload.name
+            ? { ...video, content: action.payload.content }
+            : video
+        ),
+      };
     default:
       return state;
   }
