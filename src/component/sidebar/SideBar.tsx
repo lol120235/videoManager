@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import UploadVideoButton from "./UploadVideoButton";
+import AnalyseButton from "./AnalyseButton";
 
 const SideBar = () => {
   return (
     <View style={styles.sidebar}>
       <UploadVideoButton />
+      <AnalyseButton />
     </View>
   );
 };
