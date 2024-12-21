@@ -6,7 +6,7 @@ import { analyseVideoContent } from "../../lib/analyseVideoContent";
 import { getEmbeddings } from "../../lib/callOpenAI";
 
 const UploadVideoButton = () => {
-  console.log("It's fixed yeaaaa", process.env.EXPO_PUBLIC_OPENAI_AZURE_URL);
+  // console.log("It's fixed yeaaaa", process.env.EXPO_PUBLIC_OPENAI_AZURE_URL);
   const dispatch = useDispatch();
 
   const handleUpload = async () => {
@@ -30,19 +30,19 @@ const UploadVideoButton = () => {
         });
 
         // Analyse video content and dispatch the update
-        // analyseVideoContent(asset.uri).then((content) => {
-        //   console.log("Updating Video");
-        //   console.log(
-        //     dispatch({
-        //       type: "UPDATE_VIDEO",
-        //       payload: {
-        //         name: asset.name,
-        //         uri: asset.uri,
-        //         content,
-        //       },
-        //     })
-        //   );
-        // });
+        analyseVideoContent(asset.uri).then((content) => {
+          console.log("Updating Video");
+          console.log(
+            dispatch({
+              type: "UPDATE_VIDEO",
+              payload: {
+                name: asset.name,
+                uri: asset.uri,
+                content,
+              },
+            })
+          );
+        });
       });
     }
   };
