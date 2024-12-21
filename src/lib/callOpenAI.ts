@@ -26,7 +26,8 @@ async function getEmbeddings(messages: any) {
   }
 
   const client = new OpenAIClient(endpoint, new AzureKeyCredential(azureKey));
-  const response = await client.getEmbeddings(deploymentId, messages);
+  const response = (await client.getEmbeddings(deploymentId, messages)).data[0]
+    .embedding;
 
   return response;
 }

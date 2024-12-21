@@ -30,19 +30,39 @@ const UploadVideoButton = () => {
         });
 
         // Analyse video content and dispatch the update
-        analyseVideoContent(asset.uri).then((content) => {
-          console.log("Updating Video");
-          console.log(
-            dispatch({
+        analyseVideoContent(asset.uri)
+          .then((content) => {
+            console.log("Updating Video");
+            return dispatch({
               type: "UPDATE_VIDEO",
               payload: {
                 name: asset.name,
                 uri: asset.uri,
-                content,
+                content: content?.map((c) => [c, null]),
               },
-            })
-          );
-        });
+            });
+          })
+          .then((result) => {
+            result.payload.content?.forEach((c) => {
+              getEmbeddings(c[0])
+                .then((embeddings) => {
+                  console.log("Updating Embeddings");
+                  console.log(
+                    dispatch({
+                      type: "UPDATE_VIDEO",
+                      payload: {
+                        name: asset.name,
+                        uri: asset.uri,
+                        content: [c[0], embeddings],
+                      },
+                    })
+                  );
+                })
+                .catch((error) => {
+                  console.error("Error getting embeddings", error);
+                });
+            });
+          });
       });
     }
   };

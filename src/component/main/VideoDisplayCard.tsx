@@ -7,7 +7,7 @@ import PopUpModal from "./PopUpModal";
 const VideoDisplayCard = ({
   video,
 }: {
-  video: { name: string | null; uri: string | null; content: string | null };
+  video: { name: string | null; uri: string | null; content: any[] | null };
 }) => {
   const videoRef = useRef<Video>(null);
   const dispatch = useDispatch();
@@ -44,7 +44,9 @@ const VideoDisplayCard = ({
           onClose={() => setModalVisible(false)}
         >
           <Text>Video Name: {video.name}</Text>
-          <Text>{video.content}</Text>
+          {video.content?.map((c, i) => (
+            <Text key={i}>{c}</Text>
+          ))}
         </PopUpModal>
         <View style={styles.thumbnail}>
           <Video

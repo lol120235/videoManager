@@ -7,7 +7,7 @@ import VideoDisplayCard from "./VideoDisplayCard";
 const VideoDisplayLine = ({
   videos,
 }: {
-  videos: { name: string; uri: string; content: string }[];
+  videos: { name: string; uri: string; content: any[] }[];
 }) => {
   console.log(videos);
   return (

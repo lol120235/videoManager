@@ -123,13 +123,9 @@ const formatVideoContent = async (video: string) => {
 
 function splitIntoScenes(summary: string): string[] {
   const sceneRegex = /\[.*?\] - \[.*?\]/g;
-  const scenes = summary
-    .split(sceneRegex)
-    .filter((scene) => scene.trim() !== "");
-  return scenes.map((scene, index) => {
-    const timestampMatches = summary.match(sceneRegex);
-    return `${timestampMatches} ${scene.trim()}`;
-  });
+  const scenes = summary.split(sceneRegex);
+  console.log(scenes);
+  return [summary];
 }
 
 const analyseVideoContent = async (video: string) => {
@@ -167,7 +163,7 @@ const analyseVideoContent = async (video: string) => {
 
   if (content) {
     console.log("Splitted Scenes");
-    const scenes = splitIntoScenes(content);
+    const scenes = content.split("\n\n");
     console.log(scenes);
     return scenes;
   }

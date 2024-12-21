@@ -12,6 +12,8 @@
     "@azure/openai": "1.0.0-beta.6",
     "@expo/metro-runtime": "~4.0.0",
     "@lmstudio/sdk": "^0.4.2",
+    "@tensorflow/tfjs": "^4.22.0",
+    "compute-cosine-similarity": "^1.1.0",
     "dotenv": "^16.4.7",
     "expo": "~52.0.19",
     "expo-av": "~15.0.1",

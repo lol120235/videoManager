@@ -9,7 +9,10 @@ import {
   toChatgptFormat,
 } from "./giftedMessages";
 import ResetChatButton from "./ResetChatButton";
-import { openAIChat } from "../../lib/callOpenAI";
+import { getEmbeddings, openAIChat } from "../../lib/callOpenAI";
+import { useDispatch, useSelector } from "react-redux";
+import { cosineSimilarity } from "../../lib/calFunctions";
+import { ProdInputs } from "@tensorflow/tfjs";
 
 export default function ChatLayout() {
   const theme = useTheme();
@@ -32,6 +35,9 @@ export default function ChatLayout() {
     },
   });
 
+  const data = useSelector((state: any) => state).videos.videos;
+  console.log(data);
+
   const [messages, setMessages] = useState<IMessage[]>([
     newGptMessage(
       "Ohio, u can talk to me here. I can help u with video editting, for example, I can help u filter the content of the videos."
@@ -39,6 +45,10 @@ export default function ChatLayout() {
   ]);
   const [quickReplies, setQuickReplies] = useState<string[]>([]);
   const [gptThinking, setGptThinking] = useState(false);
+
+  interface provideData {
+    [key: string]: string[];
+  }
 
   const onSend = useCallback((newMessages: IMessage[] = []) => {
     setMessages((previousMessages) =>
@@ -74,8 +84,34 @@ export default function ChatLayout() {
 
     const systemPrompt =
       "You are an assistant for video processing. You can help the user with video editing. ";
+
+    const relatedData: provideData = {};
+    getEmbeddings(messages[0].text).then((embeddings) => {
+      for (const video of data) {
+        for (const content of video.content) {
+          if (content) {
+            if (cosineSimilarity(content[1], embeddings) >= 0.7) {
+              if (!relatedData[video.name]) {
+                relatedData[video.name] = [content[0]];
+              } else {
+                relatedData[video.name].push(content[0]);
+              }
+            }
+          }
+        }
+      }
+    });
+
+    var convertedData = "";
+    for (const key in relatedData) {
+      convertedData += key + ": \n" + relatedData[key].join("\n") + "\n\n";
+    }
+
+    console.log("Related Data: ");
+    console.log(convertedData);
+
     openAIChat([
-      { role: "system", content: systemPrompt },
+      { role: "system", content: systemPrompt + "\n\n" + convertedData },
       ...toChatgptFormat(messages.slice(1)),
     ]).then((response) => {
       setGptThinking(false);
