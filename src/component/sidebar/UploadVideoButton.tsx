@@ -30,19 +30,19 @@ const UploadVideoButton = () => {
         });
 
         // Analyse video content and dispatch the update
-        // analyseVideoContent(asset.uri).then((content) => {
-        //   console.log("Updating Video");
-        //   console.log(
-        //     dispatch({
-        //       type: "UPDATE_VIDEO",
-        //       payload: {
-        //         name: asset.name,
-        //         uri: asset.uri,
-        //         content,
-        //       },
-        //     })
-        //   );
-        // });
+        analyseVideoContent(asset.uri).then((content) => {
+          console.log("Updating Video");
+          console.log(
+            dispatch({
+              type: "UPDATE_VIDEO",
+              payload: {
+                name: asset.name,
+                uri: asset.uri,
+                content,
+              },
+            })
+          );
+        });
       });
     }
   };
