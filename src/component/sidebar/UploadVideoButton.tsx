@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { analyseVideoContent } from "../../lib/analyseVideoContent";
 import { getEmbeddings } from "../../lib/callOpenAI";
 
@@ -18,7 +18,6 @@ const UploadVideoButton = () => {
       console.log(result.assets);
 
       result.assets.forEach((asset) => {
-        const [content, setContent] = React.useState<string | null>();
         // Dispatch initial video data
         dispatch({
           type: "ADD_VIDEO",
@@ -26,33 +25,24 @@ const UploadVideoButton = () => {
             name: asset.name,
             uri: asset.uri,
             content: null, // Initial content is null
+            embeddings: null, // Initial embeddings is null
           },
         });
 
         // Analyse video content and dispatch the update
-        analyseVideoContent(asset.uri).then((content) => {
-          setContent(content);
-          dispatch({
-            type: "UPDATE_VIDEO",
-            payload: {
-              name: asset.name,
-              uri: asset.uri,
-              content,
-            },
-          });
-        });
-
-        getEmbeddings(content).then((embeddings) => {
-          dispatch({
-            type: "UPDATE_VIDEO",
-            payload: {
-              name: asset.name,
-              uri: asset.uri,
-              content,
-              embeddings,
-            },
-          });
-        });
+        // analyseVideoContent(asset.uri).then((content) => {
+        //   console.log("Updating Video");
+        //   console.log(
+        //     dispatch({
+        //       type: "UPDATE_VIDEO",
+        //       payload: {
+        //         name: asset.name,
+        //         uri: asset.uri,
+        //         content,
+        //       },
+        //     })
+        //   );
+        // });
       });
     }
   };

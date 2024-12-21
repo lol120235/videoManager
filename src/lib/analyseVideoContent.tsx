@@ -26,17 +26,17 @@ const splitVideoScreen = (videoData: string): Promise<string[]> => {
       let processedFrames = 0;
       var interval = 1;
       if (duration > 3600) {
-        interval = 30;
+        interval = 40;
       } else if (duration > 1800) {
-        interval = 15;
+        interval = 18;
       } else if (duration > 600) {
-        interval = 10;
+        interval = 12;
       } else if (duration > 300) {
-        interval = 5;
+        interval = 6;
       } else if (duration > 60) {
-        interval = 3;
+        interval = 4;
       } else if (duration > 30) {
-        interval = 2;
+        interval = 3;
       }
 
       for (let j = 0; j < duration; j += interval) {
@@ -124,6 +124,17 @@ const formatVideoContent = async (video: string) => {
   return videoContents;
 };
 
+function splitIntoScenes(summary: string): string[] {
+  const sceneRegex = /\[.*?\] - \[.*?\]/g;
+  const scenes = summary
+    .split(sceneRegex)
+    .filter((scene) => scene.trim() !== "");
+  return scenes.map((scene, index) => {
+    const timestampMatches = summary.match(sceneRegex);
+    return `${timestampMatches} ${scene.trim()}`;
+  });
+}
+
 const analyseVideoContent = async (video: string) => {
   const videoContents = await formatVideoContent(video);
 
@@ -156,7 +167,13 @@ const analyseVideoContent = async (video: string) => {
   const content = response.choices[0].message?.content;
   console.log("Video Content (Analysed)");
   console.log(content);
-  return content;
+
+  if (content) {
+    console.log("Splitted Scenes");
+    const scenes = splitIntoScenes(content);
+    console.log(scenes);
+    return scenes;
+  }
 };
 
 export { getVideo, getVideoContent, formatVideoContent, analyseVideoContent };
