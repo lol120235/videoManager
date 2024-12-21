@@ -14,7 +14,7 @@ const SideBar = () => {
 
 const styles = StyleSheet.create({
   sidebar: {
-    width: 250, // Adjust the width as needed
+    width: 300, // Adjust the width as needed
     backgroundColor: "#f0f0f0",
     alignItems: "flex-start",
     justifyContent: "flex-start",

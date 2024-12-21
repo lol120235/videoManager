@@ -16,8 +16,7 @@ const getVideo = async (videoName: string) => {
 };
 
 const splitVideoScreen = (
-  videoData: string,
-  interval: number
+  videoData: string
 ): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     const resultImages: string[] = [];
@@ -27,6 +26,7 @@ const splitVideoScreen = (
     video.addEventListener("loadeddata", () => {
       const { duration } = video;
       let processedFrames = 0;
+      const interval = duration / Math.log2(duration) * 2;
 
       for (let j = 0; j < duration; j += interval) {
         video.currentTime = j;
@@ -62,7 +62,7 @@ const getVideoContent = async (video: string) => {
     throw new Error("Video not found");
   }
 
-  var frames = await splitVideoScreen(video, 10);
+  var frames = await splitVideoScreen(video);
   console.log(frames);
 
   const contents = await Promise.all(
