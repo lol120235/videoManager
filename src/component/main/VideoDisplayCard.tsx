@@ -51,9 +51,26 @@ const VideoDisplayCard = ({
           onClose={() => setModalVisible(false)}
         >
           <ScrollView style={{ padding: 10 }}>
-            <Text>Video Name: {video.name}</Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                textAlign: "center",
+                marginBottom: 16,
+              }}
+            >
+              Video Name: {video.name}
+            </Text>
             {video.content?.map((c, i) => (
-              <Text key={i}>
+              <Text
+                key={i}
+                style={{
+                  textAlign: "left",
+                  borderBottomColor: "#ccc",
+                  borderBottomWidth: 1,
+                  width: "100%",
+                  marginTop: 16,
+                }}
+              >
                 {c.content}
                 {"\n\n"}
               </Text>
